@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -19,7 +20,7 @@ export default function Performance () {
     return () => clearInterval(interval);
   }, []);
 
-  const MetricCard = ({ title, value, secondaryValue, icon: Icon, status = 'normal' }) => (
+  const MetricCard = ({ title, value, secondaryValue, icon: Icon, status = 'normal' }: any) => (
     <Card className="bg-white dark:bg-gray-900 rounded-lg transition-colors">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</CardTitle>
@@ -191,7 +192,7 @@ export default function Performance () {
                 </tr>
               </thead>
               <tbody>
-                {data.topEndpoints.map((endpoint, index) => (
+                {data.topEndpoints.map((endpoint) => (
                   <tr 
                     key={endpoint.endpoint}
                     className="border-t dark:border-gray-800"

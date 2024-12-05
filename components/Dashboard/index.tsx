@@ -5,7 +5,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { CalendarDays, Users, CreditCard, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { generateMockData } from '@/lib/data';
 import {FilterModal} from './FilterModal';
-import {SideNav} from './SideNav';
 import { ThemeProvider, useTheme } from '@/lib/context/ThemeContext';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
