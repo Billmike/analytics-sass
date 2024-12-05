@@ -5,7 +5,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { CalendarDays, Users, CreditCard, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { generateMockData } from '@/lib/data';
 import {FilterModal} from './FilterModal';
-import {SideNav} from './SideNav';
 import { ThemeProvider, useTheme } from '@/lib/context/ThemeContext';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -143,7 +142,6 @@ const DashboardContent = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors">
-      <SideNav />
       
       <div className="flex-1">
         <div className="p-8 max-w-7xl mx-auto space-y-8">
