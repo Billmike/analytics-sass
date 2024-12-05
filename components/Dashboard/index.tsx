@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { CalendarDays, Users, CreditCard, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { generateMockData } from '@/lib/data';
-import { FilterModal } from './FilterModal';
-import { SideNav } from './SideNav';
+import {FilterModal} from './FilterModal';
+import {SideNav} from './SideNav';
+import { ThemeProvider, useTheme } from '@/lib/context/ThemeContext';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-export const Dashboard = () => {
+const DashboardContent = () => {
+  const { theme } = useTheme();
+  
   // Filter states
   const [timeRange, setTimeRange] = useState('6m');
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -92,13 +95,13 @@ export const Dashboard = () => {
   }, [timeRange, dateRange, selectedSegments, selectedFeatures, comparisonMode]);
 
   const MetricCard = ({ title, value, change, icon: Icon }) => (
-    <Card className="bg-white rounded-lg">
+    <Card className="bg-white dark:bg-gray-900 rounded-lg transition-colors">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-gray-500">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-gray-500" />
+        <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">
+        <div className="text-2xl font-bold dark:text-white transition-colors">
           {title === 'Revenue' && '$'}
           {typeof value === 'number' && value >= 1000 
             ? `${(value / 1000).toFixed(1)}k` 
@@ -110,11 +113,13 @@ export const Dashboard = () => {
           ) : (
             <ArrowDownRight className="h-4 w-4 text-red-500" />
           )}
-          <div className={`text-xs px-2 py-1 rounded ${
-            change > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+          <div className={`text-xs px-2 py-1 rounded transition-colors ${
+            change > 0 
+              ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400' 
+              : 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-400'
           }`}>
             {Math.abs(change).toFixed(1)}%
-            <span className="text-gray-500 ml-1">Compared to last month</span>
+            <span className="text-gray-500 dark:text-gray-400 ml-1">vs. last month</span>
           </div>
         </div>
       </CardContent>
@@ -136,13 +141,13 @@ export const Dashboard = () => {
   const chartData = formatChartData(data.timeSeriesData);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors">
       <SideNav />
       
       <div className="flex-1">
         <div className="p-8 max-w-7xl mx-auto space-y-8">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold">Overview</h2>
+            <h2 className="text-xl font-semibold dark:text-white transition-colors">Overview</h2>
             <div className="flex items-center gap-3">
               <FilterModal
                 timeRange={timeRange}
@@ -186,12 +191,11 @@ export const Dashboard = () => {
             />
           </div>
 
-          {/* Revenue Trends */}
-          <Card className="bg-white">
+          <Card className="bg-white dark:bg-gray-900 transition-colors">
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <div>
-                  <h3 className="text-base font-semibold">Revenue Over Time</h3>
+                  <h3 className="text-base font-semibold dark:text-white transition-colors">Revenue Over Time</h3>
                   <div className="flex items-center gap-6 mt-2">
                     {selectedSegments.map((segment, index) => (
                       <div key={segment} className="flex items-center gap-2">
@@ -199,7 +203,9 @@ export const Dashboard = () => {
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: COLORS[index % COLORS.length] }}
                         ></span>
-                        <span className="text-sm text-gray-600">{segment}</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400 transition-colors">
+                          {segment}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -208,10 +214,25 @@ export const Dashboard = () => {
               <div className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
+                    <CartesianGrid 
+                      strokeDasharray="3 3" 
+                      vertical={false}
+                      stroke={theme === 'dark' ? '#374151' : '#E5E7EB'}
+                    />
+                    <XAxis 
+                      dataKey="name"
+                      stroke={theme === 'dark' ? '#9CA3AF' : '#6B7280'}
+                    />
+                    <YAxis 
+                      stroke={theme === 'dark' ? '#9CA3AF' : '#6B7280'}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: theme === 'dark' ? '#1F2937' : '#FFFFFF',
+                        borderColor: theme === 'dark' ? '#374151' : '#E5E7EB',
+                        color: theme === 'dark' ? '#FFFFFF' : '#000000'
+                      }}
+                    />
                     {selectedSegments.map((segment, index) => (
                       <Line
                         key={segment}
@@ -222,16 +243,6 @@ export const Dashboard = () => {
                         dot={false}
                       />
                     ))}
-                    {comparisonMode && (
-                      <Line
-                        type="monotone"
-                        dataKey="total"
-                        stroke="#666"
-                        strokeDasharray="5 5"
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    )}
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -239,13 +250,12 @@ export const Dashboard = () => {
           </Card>
 
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
-            {/* Feature Usage */}
-            <Card className="bg-white">
+            <Card className="bg-white dark:bg-gray-900 transition-colors">
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="text-base font-semibold">Feature Usage</h3>
-                    <span className="text-sm text-gray-500">Top Features by Usage</span>
+                    <h3 className="text-base font-semibold dark:text-white transition-colors">Feature Usage</h3>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 transition-colors">Top Features by Usage</span>
                   </div>
                 </div>
                 <div className="space-y-4">
@@ -253,15 +263,15 @@ export const Dashboard = () => {
                     <div key={feature.name} className="flex items-center gap-4">
                       <div className="flex-1">
                         <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm font-medium">{feature.name}</span>
-                          <div className="text-sm text-gray-500">
+                          <span className="text-sm font-medium dark:text-white transition-colors">{feature.name}</span>
+                          <div className="text-sm text-gray-500 dark:text-gray-400 transition-colors">
                             <span className="font-medium">{feature.users}</span>
                             <span> • {((feature.users / data.featureUsage.reduce((acc, curr) => acc + curr.users, 0)) * 100).toFixed(1)}%</span>
                           </div>
                         </div>
-                        <div className="w-full bg-gray-100 rounded h-2">
+                        <div className="w-full bg-gray-100 dark:bg-gray-800 rounded h-2 transition-colors">
                           <div 
-                            className="bg-teal-500 h-2 rounded"
+                            className="bg-teal-500 h-2 rounded transition-colors"
                             style={{ 
                               width: `${(feature.users / Math.max(...data.featureUsage.map(f => f.users))) * 100}%` 
                             }}
@@ -274,13 +284,12 @@ export const Dashboard = () => {
               </div>
             </Card>
 
-            {/* User Segments */}
-            <Card className="bg-white">
+            <Card className="bg-white dark:bg-gray-900 transition-colors">
               <div className="p-6">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="text-base font-semibold">User Segments</h3>
-                    <span className="text-sm text-gray-500">Distribution</span>
+                    <h3 className="text-base font-semibold dark:text-white transition-colors">User Segments</h3>
+                    <span className="text-sm text-gray-500 dark:text-gray-400 transition-colors">Distribution</span>
                   </div>
                 </div>
                 <div className="h-80">
@@ -302,7 +311,13 @@ export const Dashboard = () => {
                           />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: theme === 'dark' ? '#1F2937' : '#FFFFFF',
+                          borderColor: theme === 'dark' ? '#374151' : '#E5E7EB',
+                          color: theme === 'dark' ? '#FFFFFF' : '#000000'
+                        }}
+                      />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -312,5 +327,13 @@ export const Dashboard = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+export const Dashboard = () => {
+  return (
+    <ThemeProvider>
+      <DashboardContent />
+    </ThemeProvider>
   );
 };
