@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { CalendarDays, Users, CreditCard, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { generateMockData } from '@/lib/data';
 import {FilterModal} from './FilterModal';
@@ -29,11 +30,11 @@ const DashboardContent = () => {
   }));
 
   // Calculate metrics based on time series data
-  const calculateMetrics = (timeSeriesData) => {
+  const calculateMetrics = (timeSeriesData: any) => {
     const currentData = timeSeriesData[timeSeriesData.length - 1];
     const previousData = timeSeriesData[timeSeriesData.length - 2];
     
-    const calculateChange = (current, previous) => 
+    const calculateChange = (current: any, previous: any) => 
       ((current - previous) / previous) * 100;
 
     return {
@@ -94,7 +95,7 @@ const DashboardContent = () => {
     return () => clearInterval(interval);
   }, [timeRange, dateRange, selectedSegments, selectedFeatures, comparisonMode]);
 
-  const MetricCard = ({ title, value, change, icon: Icon }) => (
+  const MetricCard = ({ title, value, change, icon: Icon }: any) => (
     <Card className="bg-white dark:bg-gray-900 rounded-lg transition-colors">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</CardTitle>
@@ -127,8 +128,8 @@ const DashboardContent = () => {
   );
 
   // Format time series data for charts
-  const formatChartData = (timeSeriesData) => {
-    return timeSeriesData.map(point => ({
+  const formatChartData = (timeSeriesData: any) => {
+    return timeSeriesData.map((point: any) => ({
       name: point.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
       ...selectedSegments.reduce((acc, segment) => ({
         ...acc,

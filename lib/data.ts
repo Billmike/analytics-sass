@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 interface FilterOptions {
   timeRange: string;
   dateRange: [Date | null, Date | null];
@@ -40,7 +41,7 @@ export const generateMockData = (options: FilterOptions) => {
   };
 
   const { start, end } = getDateRange();
-  const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  // const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
   // Generate data points for the date range
   const generateTimeSeriesData = () => {
@@ -50,14 +51,14 @@ export const generateMockData = (options: FilterOptions) => {
       'Enterprise': 2.5,
       'SMB': 1.5,
       'Startup': 1.0
-    };
+    } as any;
 
     while (currentDate <= end) {
       const baseValue = 40000 + Math.random() * 20000;
       const dataPoint = {
         date: new Date(currentDate),
         total: baseValue,
-      };
+      } as any;
 
       // Add segment-specific data
       selectedSegments.forEach(segment => {
@@ -80,7 +81,7 @@ export const generateMockData = (options: FilterOptions) => {
       'Reports': { baseUsage: 35 },
       'API Access': { baseUsage: 25 },
       'Integrations': { baseUsage: 20 }
-    };
+    } as any;
 
     return selectedFeatures.map(feature => ({
       name: feature,

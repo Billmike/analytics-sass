@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { 
   LayoutDashboard, 
@@ -20,7 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { useTheme } from '@/lib/context/ThemeContext';
 import { Separator } from "@/components/ui/separator";
 
-const NavGroup = ({ title, children }) => (
+const NavGroup = ({ title, children }: any) => (
   <div className="space-y-1">
     <h3 className="text-xs uppercase text-gray-500 dark:text-gray-400 font-medium px-4 py-2">
       {title}
