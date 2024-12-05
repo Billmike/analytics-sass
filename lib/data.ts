@@ -1,70 +1,103 @@
-export const generateMockData = (timeRange: string) => {
-  // Calculate number of data points based on time range
-  const getDataPoints = (range: string) => {
-    switch (range) {
-      case '1m': return 30;
-      case '3m': return 90;
-      case '6m': return 180;
-      case '1y': return 365;
-      default: return 180;
+interface FilterOptions {
+  timeRange: string;
+  dateRange: [Date | null, Date | null];
+  selectedSegments: string[];
+  selectedFeatures: string[];
+  comparisonMode: boolean;
+}
+
+export const generateMockData = (options: FilterOptions) => {
+  const { timeRange, dateRange, selectedSegments, selectedFeatures, comparisonMode } = options;
+
+  // Get date range based on timeRange or custom dateRange
+  const getDateRange = () => {
+    if (timeRange === 'custom' && dateRange[0] && dateRange[1]) {
+      return {
+        start: dateRange[0],
+        end: dateRange[1]
+      };
     }
+
+    const end = new Date();
+    const start = new Date();
+    switch (timeRange) {
+      case '1m':
+        start.setMonth(end.getMonth() - 1);
+        break;
+      case '3m':
+        start.setMonth(end.getMonth() - 3);
+        break;
+      case '6m':
+        start.setMonth(end.getMonth() - 6);
+        break;
+      case '1y':
+        start.setFullYear(end.getFullYear() - 1);
+        break;
+      default:
+        start.setMonth(end.getMonth() - 6);
+    }
+    return { start, end };
   };
 
-  const dataPoints = getDataPoints(timeRange);
-  const dates = Array.from({ length: dataPoints }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - (dataPoints - i));
-    return date;
-  });
+  const { start, end } = getDateRange();
+  const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 
-  // Group dates by month for monthly view
-  const monthlyDates = dates.reduce((acc, date) => {
-    const monthYear = date.toLocaleString('default', { month: 'short', year: '2-digit' });
-    if (!acc[monthYear]) {
-      acc[monthYear] = [];
+  // Generate data points for the date range
+  const generateTimeSeriesData = () => {
+    const data = [];
+    const currentDate = new Date(start);
+    const segmentMultipliers = {
+      'Enterprise': 2.5,
+      'SMB': 1.5,
+      'Startup': 1.0
+    };
+
+    while (currentDate <= end) {
+      const baseValue = 40000 + Math.random() * 20000;
+      const dataPoint = {
+        date: new Date(currentDate),
+        total: baseValue,
+      };
+
+      // Add segment-specific data
+      selectedSegments.forEach(segment => {
+        dataPoint[segment] = baseValue * segmentMultipliers[segment] * (0.8 + Math.random() * 0.4);
+      });
+
+      data.push(dataPoint);
+      currentDate.setDate(currentDate.getDate() + 1);
     }
-    acc[monthYear].push(date);
-    return acc;
-  }, {} as Record<string, Date[]>);
+    return data;
+  };
 
-  const months = Object.keys(monthlyDates);
+  const timeSeriesData = generateTimeSeriesData();
 
-  // Generate revenue data with realistic trends
-  const revenueData = months.map(month => ({
-    name: month,
-    value: Math.floor(40000 + Math.random() * 20000),
-  }));
+  // Filter feature usage data based on selected features
+  const generateFeatureData = () => {
+    const allFeatures = {
+      'Dashboard': { baseUsage: 75 },
+      'Analytics': { baseUsage: 55 },
+      'Reports': { baseUsage: 35 },
+      'API Access': { baseUsage: 25 },
+      'Integrations': { baseUsage: 20 }
+    };
 
-  // Generate user engagement data
-  const userEngagement = months.map(month => ({
-    name: month,
-    'Daily Active Users': Math.floor(800 + Math.random() * 400),
-    'Weekly Active Users': Math.floor(1800 + Math.random() * 600),
-    'Monthly Active Users': Math.floor(2800 + Math.random() * 800),
-  }));
-
-  // Generate retention data based on time range
-  const retentionPeriods = timeRange === '1m' ? 4 : timeRange === '3m' ? 12 : 24;
-  const retentionData = Array.from({ length: retentionPeriods }, (_, i) => ({
-    week: `Week ${i + 1}`,
-    retention: Math.max(100 - (i * (Math.random() * 2 + 3)), 60),
-  }));
+    return selectedFeatures.map(feature => ({
+      name: feature,
+      users: Math.floor(allFeatures[feature].baseUsage + Math.random() * 20),
+      previousUsers: comparisonMode ? 
+        Math.floor(allFeatures[feature].baseUsage + Math.random() * 20) : 
+        undefined
+    }));
+  };
 
   return {
-    revenueData,
-    userEngagement,
-    featureUsage: [
-      { name: 'Dashboard', users: Math.floor(75 + Math.random() * 20) },
-      { name: 'Analytics', users: Math.floor(55 + Math.random() * 20) },
-      { name: 'Reports', users: Math.floor(35 + Math.random() * 20) },
-      { name: 'API Access', users: Math.floor(25 + Math.random() * 10) },
-      { name: 'Integrations', users: Math.floor(20 + Math.random() * 10) },
-    ],
-    userSegments: [
-      { name: 'Enterprise', value: 30 },
-      { name: 'SMB', value: 45 },
-      { name: 'Startup', value: 25 },
-    ],
-    retentionData,
+    timeSeriesData,
+    featureUsage: generateFeatureData(),
+    userSegments: selectedSegments.map(segment => ({
+      name: segment,
+      value: Math.floor(20 + Math.random() * 40)
+    })),
+    comparisonData: comparisonMode ? generateTimeSeriesData() : undefined
   };
 };
