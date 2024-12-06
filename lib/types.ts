@@ -5,3 +5,12 @@ export interface MetricType {
   change: number;
   icon: any;
 }
+
+export interface MetricCardProps {
+  title: string;
+  value: number;
+  trend: number;
+  icon: any;
+  prefix?: string;
+  suffix?: string;
+}
