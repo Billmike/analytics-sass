@@ -31,9 +31,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <div className="flex min-h-screen">
-            <SideNav />
-            <main className="flex-1">
+          <div className="flex h-screen overflow-hidden">
+            <div className="fixed inset-y-0"> {/* Make SideNav fixed */}
+              <SideNav />
+            </div>
+            <main className="flex-1 overflow-y-auto ml-64">
               {children}
             </main>
           </div>
