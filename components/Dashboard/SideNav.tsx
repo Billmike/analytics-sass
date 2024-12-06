@@ -65,7 +65,7 @@ export const SideNav = () => {
       {/* Logo */}
       <div className="flex items-center gap-2 px-4 py-6">
         <div className="w-8 h-8 bg-teal-600 rounded-lg"></div>
-        <span className="font-semibold text-xl dark:text-white">Analytics</span>
+        <span className="font-semibold text-xl dark:text-white">Tener</span>
       </div>
 
       {/* Main Navigation */}
