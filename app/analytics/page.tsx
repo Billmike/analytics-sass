@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-const Analytics = () => {
+export default function Analytics () {
   const { theme } = useTheme();
   const [timeRange, setTimeRange] = useState('30d');
   const [data, setData] = useState(generateAnalyticsData({ timeRange }));
@@ -200,5 +200,3 @@ const Analytics = () => {
     </div>
   );
 };
-
-export default Analytics;
