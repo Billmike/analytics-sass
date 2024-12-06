@@ -11,13 +11,11 @@ import {
   BarChart3, 
   ShoppingCart,
   Settings,
-  Bell,
   Target,
   Zap,
   LifeBuoy,
   FileText,
   PieChart,
-  MessageSquare,
   ArrowUpRight
 } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
@@ -105,12 +103,6 @@ export const SideNav = () => {
         <NavGroup title="Reports">
           <NavItem icon={FileText} label="Revenue Report" href="/reports/revenue" />
           <NavItem icon={FileText} label="Customer Report" href="/reports/customers" />
-          <NavItem icon={FileText} label="Campaign ROI" href="/reports/campaigns" />
-        </NavGroup>
-
-        <NavGroup title="Notifications">
-          <NavItem icon={Bell} label="Alerts" href="/alerts" badge="3" />
-          <NavItem icon={MessageSquare} label="Messages" href="/messages" badge="5" />
         </NavGroup>
       </div>
 
