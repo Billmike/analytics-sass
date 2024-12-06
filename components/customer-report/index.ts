@@ -1,0 +1,6 @@
+export { CustomerOverview } from './CustomerOverview'
+export { CustomerGrowthCharts } from './CustomerGrowthCharts'
+export { CustomerSegments } from './CustomerSegments'
+export { CustomerJourney } from './CustomerJourney'
+export { CustomerSatisfaction } from './CustomerSatisfaction'
+export { HeatMap } from './HeatMap'
