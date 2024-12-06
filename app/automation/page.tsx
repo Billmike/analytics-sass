@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const Automation = () => {
+export default function Automation () {
   const [timeRange, setTimeRange] = useState('30d');
   const [searchQuery, setSearchQuery] = useState('');
   const [data, setData] = useState(generateAutomationData({ timeRange }));
@@ -93,5 +93,3 @@ export const Automation = () => {
     </div>
   );
 };
-
-export default Automation;
